@@ -1,15 +1,20 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faEnvelope } from '@fortawesome/free-solid-svg-icons'
+import { faEdit, faEnvelope, faLanguage } from '@fortawesome/free-solid-svg-icons'
 import { faGithub, faGithubSquare, faTelegram, faTwitter } from '@fortawesome/free-brands-svg-icons'
+import en from "../public/i18n/en-US";
+import zh from "../public/i18n/zh-CN";
+import ja from "../public/i18n/ja";
+import Link from "next/link";
 
 const Home: NextPage = () => {
   const [data, setData] = useState([{ key: 1, title: "Loading", url: "", summary: "Loading" },])
   useEffect(() => {
     let pageArr = new Array();
-    const apiUrl = 'url';
+    const apiUrl = 'https://blog.picoaoi.com/wp-json/wp/v2/posts';
     fetch(apiUrl, {
       mode: "cors",
 
@@ -27,7 +32,7 @@ const Home: NextPage = () => {
             }
             setData(pageArr)
           })
-          
+
       })
       .catch((error: any) => {
         console.log(error)
@@ -54,6 +59,11 @@ const Home: NextPage = () => {
   };
   let progressMax = scrollHeight - clientHeight;
 
+  const { locale } = useRouter();
+  let t;
+  if (locale === "zh-CN" || locale === "zh") t = zh;
+  else if (locale === "ja") t = ja;
+  else t = en;
   return (
     <>
       <div className="container">
@@ -73,10 +83,24 @@ const Home: NextPage = () => {
             ></progress>
           </div>
           <div className="firstPage">
+            <div className="absolute top-6 right-6 h-12 w-30 dropdown dropdown-end" id="changeLang">
+              <FontAwesomeIcon className="btn btn-ghost left-0" tabIndex={0} icon={faLanguage} />
+              <ul tabIndex={0} className="p-2 shadow menu dropdown-content bg-base-200 rounded-box w-52 ">
+                <li>
+                  <Link href="/" locale="en-US" passHref>English</Link>
+                </li>
+                <li>
+                  <Link href="/zh-CN" locale="zh-CN" passHref>中文</Link>
+                </li>
+                <li>
+                  <Link href="/ja" locale="ja" passHref>日本語</Link>
+                </li>
+              </ul>
+            </div>
             <div id="title">
               <h1 className="title">
                 <p className="font-serif text-2xl">
-                  Hi, I am
+                  {t.hi}
                   <br />
                   <div className="mockup-code font-mono mt-4 mb-4 float-left text-xl">
                     <pre data-prefix="$">
@@ -84,7 +108,7 @@ const Home: NextPage = () => {
                     </pre>
                   </div>
                   <br />
-                  Glad to see you.
+                  {t.glad}
                 </p>
               </h1>
             </div>
@@ -95,7 +119,7 @@ const Home: NextPage = () => {
               </div>
               <div id="github" className="w-15 h-5 flex text-sky-500 dark:text-violet-400">
                 <FontAwesomeIcon className="w-5 h-5 flex-none mr-2" icon={faGithub} />
-                <p className="h-5 flex-initial flex justify-center items-center"><a id="githubLine" href="https://github.com/robert1chi">Github</a></p>
+                <p className="h-5 flex-initial flex justify-center items-center"><a id="githubLine" href="https://github.com/robert1chi">GitHub</a></p>
               </div>
             </div>
             <div
@@ -119,16 +143,16 @@ const Home: NextPage = () => {
                 </div>
                 <div className="card-body col-span-2">
                   <div id="right">
-                    <h2 className="text-xl card-title">About me</h2>
+                    <h2 className="text-xl card-title">{t.aboutMe}</h2>
                     <p>
                       zh-CN · en-US · ja-JP
                       <br />
-                      Student · Developer
+                      {t.jobs}
                       <br />
-                      Frout-end · Bioinformatics · Machine learning
+                      {t.likes}
                     </p>
                     <p className="mt-1">
-                      Contributor of <a className="text-blue-500 dark:text-violet-400" id="sakura" href="https://github.com/mirai-mamori/Sakurairo">Sakurairo</a>
+                      {t.contriF} <a className="text-blue-500 dark:text-violet-400" id="sakura" href="https://github.com/mirai-mamori/Sakurairo">Sakurairo</a>{t.contriL}
                     </p>
                   </div>
                 </div>
@@ -139,7 +163,7 @@ const Home: NextPage = () => {
             <div className="card shadow-lg dark:bg-base-200" id="card3">
               <div className="card-body">
                 <h2 className="card-title">
-                  LATEST POST
+                  {t.latest}
                 </h2>
                 <div id="contact" className=" font-mono">
                   <ul>
@@ -166,7 +190,7 @@ const Home: NextPage = () => {
           <div id="forthPage">
             <div className="card shadow-lg dark:bg-base-200" id="card3">
               <div className="card-body">
-                <h2 className="card-title">CONTACT</h2>
+                <h2 className="card-title">{t.contact}</h2>
                 <div id="contact" className="ml-20 mr-20 font-mono">
                   <div id="github" className="mt-5 h-5 flex text-zinc-500 dark:text-zinc-200">
                     <FontAwesomeIcon className="w-5 h-5 flex-none mr-2" icon={faGithub} />
@@ -210,12 +234,12 @@ const Home: NextPage = () => {
       </div>
       <footer className="px-10 py-4 border-t footer bg-base-200 text-base-content border-base-300">
         <div className="h-[24px] items-center grid-flow-col">
-          <p>© {new Date().getFullYear()} PikoAoi. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} PicoAoi. {t.rights}</p>
         </div>
         <div className="md:place-self-center md:justify-self-end">
           <div id="footerReact">
             <a className="flex flex-row items-center" href="https://pages.github.com/">
-              <p>Powered by Github Pages</p>
+              <p>{t.powered}</p>
               <FontAwesomeIcon className="w-[24px] h-[24px] flex-none ml-2" icon={faGithubSquare} />
             </a>
           </div>

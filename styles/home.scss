@@ -249,6 +249,7 @@
       #sakura::after {
         content: "";
         display: block;
+        /*开始时候下划线的宽度为100%*/
         width: 0;
         height: 3px;
         position: absolute;
@@ -295,6 +296,8 @@
       }
     }
     &:hover {
+      animation-delay: 1s;
+      //-webkit-animation-delay: 1s;
       transition: 0.3s ease-in-out 0.5s;
       color: #ffffff;
       background-color: #03a9f3;
